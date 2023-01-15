@@ -58,7 +58,17 @@ public class Main {
                     .student(s1)
                     .build();
 
+            Presence p2 = Presence.builder()
+                    .startDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+                            .parse("31/12/1998 12:12:12"))
+                    .endDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+                            .parse("31/12/1998 13:12:12"))
+                    .schoolClass(sc1)
+                    .student(s1)
+                    .build();
+
             session.save(p1);
+            session.save(p2);
         }catch (Exception e){
             System.out.println(e);
         }
@@ -70,11 +80,16 @@ public class Main {
         session.save(em2);
         session.save(sc1);
 
-        SchoolClass test1sc = session.get(SchoolClass.class, 1);
+        session.getTransaction().commit();
+
+        Session sessionRead = HibernateUtil.getSessionFactory().openSession();
+        sessionRead.beginTransaction();
+
+        SchoolClass test1sc = sessionRead.get(SchoolClass.class, 1);
 
         System.out.println(test1sc);
+        sessionRead.getTransaction().commit();
 
-        session.getTransaction().commit();
         HibernateUtil.shutdown();
     }
 }
